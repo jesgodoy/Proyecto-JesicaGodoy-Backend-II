@@ -10,6 +10,17 @@ const productManager = new ProductManager();
 const router = Router();
 const cartManager = new CartManager();
 
+
+router.get("/", async (req, res) => {
+    try {
+        const users = await UserModel.find({});
+        res.status(200).json(users);
+    } catch (error) {
+        console.error("Error al obtener los usuarios:", error);
+        res.status(500).send("Error interno del servidor.");
+    }
+});
+
 router.post("/register", async (req, res) => {
     const { first_name, last_name, email, age, password } = req.body;
 
