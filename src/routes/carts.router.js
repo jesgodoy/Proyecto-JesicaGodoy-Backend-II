@@ -4,7 +4,6 @@ import CartManager from "../dao/db/carts-manager-db.js";
 const router = express.Router();
 const cartManager = new CartManager();
 
-// Obtener todos los carritos con límite opcional
 router.get("/", async (request, response) => {
     const limit = parseInt(request.query.limit);
     try {
@@ -16,7 +15,6 @@ router.get("/", async (request, response) => {
     }
 });
 
-// Crear un nuevo carrito
 router.post("/", async (request, response) => {
     try {
         const newCart = await cartManager.addCart();
@@ -30,7 +28,6 @@ router.post("/", async (request, response) => {
     }
 });
 
-// Obtener un carrito por ID
 router.get("/:cid", async (request, response) => {
     const id = request.params.cid;
     try {
@@ -42,7 +39,6 @@ router.get("/:cid", async (request, response) => {
     }
 });
 
-// Eliminar un producto del carrito
 router.delete("/:cid/product/:pid", async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
@@ -56,24 +52,22 @@ router.delete("/:cid/product/:pid", async (req, res) => {
     }
 });
 
-// Agregar un producto al carrito
+
 router.post("/:cid/product/:pid", async (req, res) => {
     const cartId = req.params.cid;
-    const productId = req.params.pid;
-    const quantity = req.body.quantity || 1;
-
+    const productId = req.params.pid; 
+    const quantity = req.body.quantity || 1; 
     try {
-        // Validar la cantidad antes de continuar
-        cartManager.validateQuantity(quantity); // Llama a la función de validación
+       
+        cartManager.validateQuantity(quantity);
         const cartUpdated = await cartManager.addProductToCart(cartId, productId, quantity);
-        res.status(200).json(cartUpdated);
+        res.status(200).json(cartUpdated); 
     } catch (error) {
         console.error("Error al agregar producto al carrito:", error);
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message }); 
     }
 });
 
-// Eliminar un carrito por ID
 router.delete("/:cid", async (req, res) => {
     const cartId = req.params.cid;
 
@@ -89,15 +83,14 @@ router.delete("/:cid", async (req, res) => {
     }
 });
 
-// Actualizar la cantidad de un producto en el carrito
 router.put("/:cid/product/:pid", async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     const quantity = req.body.quantity;
 
     try {
-        // Validar la cantidad
-        cartManager.validateQuantity(quantity); // Llama a la función de validación
+    
+        cartManager.validateQuantity(quantity); 
         const cartUpdated = await cartManager.updateProductQuantity(cartId, productId, quantity);
         res.status(200).json(cartUpdated);
     } catch (error) {

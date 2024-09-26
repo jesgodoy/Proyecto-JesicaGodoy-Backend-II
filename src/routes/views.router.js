@@ -6,6 +6,28 @@ const router = Router();
 const productManager = new ProductManager();
 const cartManager = new CartManager();
 
+
+
+router.get("/", async (req, res) => {
+    try {
+        const products = await productManager.getProducts({
+            limit: 1000, // O un número mayor que sepas que no excederá tus productos
+        });
+
+        const nuevoArray = products.docs.map((product) => {
+            return product.toObject();
+        });
+
+        res.render("home", {
+            productos: nuevoArray,
+        });
+
+    } catch (error) {
+        console.error("Error al obtener los productos para la vista de inicio:", error);
+        res.status(500).render('error', { message: 'Error al cargar la vista de inicio.' });
+    }
+});
+
 router.get("/products", async (req, res) => {
     try {
         const { page = 1, limit = 4 } = req.query;
@@ -19,7 +41,7 @@ router.get("/products", async (req, res) => {
             return product.toObject();
         });
 
-        res.render("home", {
+        res.render("products", {
             productos: nuevoArray,
             hasPrevPage: products.hasPrevPage,
             hasNextPage: products.hasNextPage,
@@ -55,12 +77,11 @@ router.get('/carts/:cid', async (req, res) => {
                 price: item.product.price,
                 quantity: item.quantity,
                 _id: item._id.toString()
-            }))
+            })),
+            totalItems: cart.totalItems // Asegúrate de incluir esto
         };
 
-        res.render('cart', {
-            cart: processedCart
-        });
+        res.render('cart', { cart: processedCart });
 
     } catch (error) {
         console.error("Error al obtener el carrito:", error);
@@ -77,7 +98,7 @@ router.get('/products/:pid', async (req, res) => {
             return res.status(404).render('error', { message: 'Producto no encontrado' });
         }
 
-        res.render('product', {
+        res.render('product-detail', {
             product: product.toObject()
         });
 
@@ -88,7 +109,30 @@ router.get('/products/:pid', async (req, res) => {
 });
 
 router.get("/realtimeproducts", async (req, res) => {
-    res.render("realtimeproducts");
+    try {
+        res.render("realtimeproducts");
+    } catch (error) {
+        console.error("Error al renderizar realtimeproducts:", error);
+        res.status(500).render('error', { message: 'Error al cargar la vista de productos en tiempo real.' });
+    }
+});
+
+router.get("/register", (req, res) => {
+    try {
+        res.render("register");
+    } catch (error) {
+        console.error("Error al renderizar register:", error);
+        res.status(500).render('error', { message: 'Error al cargar la vista de registro.' });
+    }
+});
+
+router.get("/login", (req, res) => {
+    try {
+        res.render("login");
+    } catch (error) {
+        console.error("Error al renderizar login:", error);
+        res.status(500).render('error', { message: 'Error al cargar la vista de inicio de sesión.' });
+    }
 });
 
 export default router;

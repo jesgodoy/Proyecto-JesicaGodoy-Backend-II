@@ -1,7 +1,7 @@
 {
-  "name": "proyecto-backend1-jesica-godoy",
+  "name": "proyecto-backend2-jesica-godoy",
   "version": "1.0.0",
-  "description": "proyecto para curso de backend I  ",
+  "description": "proyecto para curso de backend II  ",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -10,11 +10,16 @@
   "author": "Jesica Godoy",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
     "express": "^4.19.2",
     "express-handlebars": "^7.1.3",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.4",
     "mongoose-paginate-v2": "^1.8.3",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
