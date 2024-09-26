@@ -1,6 +1,7 @@
-# Proyecto Backend I
+# Proyecto Backend II
 
-Este proyecto es una aplicación de ecommerce desarrollada como parte del curso de Backend en Coder. El objetivo del proyecto es aplicar los conceptos aprendidos durante el curso para crear una solución completa y funcional para un ecommerce utilizando Node.js, Express, Express-Handlebars, Socket.io , mongoose y modngoDB 
+Este proyecto es una aplicación de ecommerce desarrollada como parte del curso de Backend en Coder. El objetivo del proyecto es aplicar los conceptos aprendidos durante el curso para crear una solución completa y funcional para un ecommerce utilizando Node.js, Express, Express-Handlebars, Socket.io , mongoose y modngoDB.
+Continuamos con el protecto agregamos bcrypt, cookie-parser, jsonwebtoken, passport  y passport-jwt  para el manejo de usuarios y sesiones
 
 ## Tabla de Contenidos
 
@@ -29,7 +30,7 @@ Sigue estos pasos para configurar el proyecto en tu entorno local:
 
 1. **Clona el repositorio**:
     ```bash
-    git clone https://github.com/jesgodoy/Proyecto-JesicaGodoy-Backend-I.git
+    git clone https://github.com/jesgodoy/Proyecto-JesicaGodoy-Backend-II.git
     ```
 
 2. **Navega al directorio del proyecto**:
