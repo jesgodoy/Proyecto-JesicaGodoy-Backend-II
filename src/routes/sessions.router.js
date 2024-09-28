@@ -1,10 +1,10 @@
 import { Router } from "express";
-import jwt from "jsonwebtoken";
 import passport from "passport";
 import UserModel from "../dao/models/user.model.js";
 import CartManager from "../dao/db/carts-manager-db.js"; 
 import { createHash, isValidPassword } from "../utils/util.js";
 import ProductManager from "../dao/db/products-manager-db.js"; 
+import { generateToken } from "../utils/jsonwebtoken.js";
 
 const productManager = new ProductManager(); 
 const router = Router();
@@ -30,7 +30,6 @@ router.post("/register", async (req, res) => {
             return res.status(400).send("El usuario ya existe.");
         }
 
-     
         const newCart = await cartManager.addCart(); 
 
         const newUser = new UserModel({
@@ -43,11 +42,10 @@ router.post("/register", async (req, res) => {
         });
 
         await newUser.save();
-        const token = jwt.sign({ id: newUser._id }, "Beauty", { expiresIn: "1h" });
+        const token = generateToken(newUser); 
 
         res.cookie("BeautyCookieToken", token, { maxAge: 3600000, httpOnly: true });
         res.redirect("/api/sessions/current");
-
     } catch (error) {
         console.error("Error al registrar el usuario:", error);
         res.status(500).send("Error interno del servidor.");
@@ -68,11 +66,12 @@ router.post("/login", async (req, res) => {
             return res.status(401).send("Contraseña incorrecta.");
         }
 
-        const token = jwt.sign({ id: user._id, role: user.role }, "Beauty", { expiresIn: "1h" });
+        const token = generateToken(user); 
         res.cookie("BeautyCookieToken", token, { maxAge: 3600000, httpOnly: true });
         res.redirect("/api/sessions/current");
 
     } catch (error) {
+        console.error("Error al iniciar sesión:", error);
         res.status(500).send("Error interno del servidor.");
     }
 });
@@ -80,9 +79,7 @@ router.post("/login", async (req, res) => {
 
 router.post("/logout", async (req, res) => {
     try {
-     
         res.clearCookie("BeautyCookieToken");
-        
         res.redirect("/login");
     } catch (error) {
         console.error("Error al cerrar sesión:", error);
@@ -91,7 +88,7 @@ router.post("/logout", async (req, res) => {
 });
 
 
-router.get("/current", passport.authenticate("current", { session: false }), async (req, res) => {
+const renderHome = async (req, res) => {
     try {
         const cart = await cartManager.getCartById(req.user.cart);
         const user = {
@@ -105,20 +102,33 @@ router.get("/current", passport.authenticate("current", { session: false }), asy
             role: req.user.role
         };
 
-      
         const products = await productManager.getProducts();
         const nuevoArray = products.docs.map(product => product.toObject());
 
-       
         res.render("home", { user, productos: nuevoArray });
 
     } catch (error) {
-        
         console.error("Error al obtener los datos del usuario:", error);
-
-       
         res.status(500).render('error', { message: 'Error al obtener los datos del usuario.', error: error.message });
     }
+};
+
+
+router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
+
+
+router.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }), async (req, res) => {
+    const user = req.user;
+
+    const token = generateToken(user); 
+
+    res.cookie("BeautyCookieToken", token, { maxAge: 3600000, httpOnly: true });
+    req.session.user = user; 
+    req.session.login = true; 
+    await renderHome(req, res); 
 });
+
+
+router.get("/current", passport.authenticate("current", { session: false }), renderHome);
 
 export default router;

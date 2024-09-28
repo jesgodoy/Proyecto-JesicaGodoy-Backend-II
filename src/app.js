@@ -1,28 +1,36 @@
-
 import express from "express";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 import passport from "passport";
+import session from "express-session"; 
 import initializePassport from "./config/passport.config.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
-import sessionsRouter from "./routes/sessions.router.js"
+import sessionsRouter from "./routes/sessions.router.js";
 import viewsRouter from "./routes/views.router.js";
 import ProductManager from "./dao/db/products-manager-db.js";
 import "./database.js"; 
 
-
 const app = express();
 const PUERTO = 8080;
-
 
 app.use(express.json()); 
 app.use(express.static("./src/public")); 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+
+app.use(session({
+    secret: 'Beauty-luci-love', 
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } 
+}));
+
 initializePassport();
 app.use(passport.initialize());
+app.use(passport.session()); 
 
 
 app.engine("handlebars", engine());
@@ -34,7 +42,6 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
-
 
 const httpServer = app.listen(PUERTO, () => {
     console.log(`Escuchando en el puerto ${PUERTO}`);

@@ -11,7 +11,7 @@ const cartManager = new CartManager();
 router.get("/", async (req, res) => {
     try {
         const products = await productManager.getProducts({
-            limit: 1000, // O un número mayor que sepas que no excederá tus productos
+            limit: 1000,
         });
 
         const nuevoArray = products.docs.map((product) => {
@@ -134,5 +134,6 @@ router.get("/login", (req, res) => {
         res.status(500).render('error', { message: 'Error al cargar la vista de inicio de sesión.' });
     }
 });
+
 
 export default router;
