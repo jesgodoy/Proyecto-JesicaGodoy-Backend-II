@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import session from "express-session"; 
+import MongoStore from "connect-mongo";
 import initializePassport from "./config/passport.config.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
@@ -22,10 +23,18 @@ app.use(cookieParser());
 
 
 app.use(session({
+    store: MongoStore.create({
+        mongoUrl: "mongodb+srv://jesigodoyprogramacion:Coderbackend@cluster0.4rbfc.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0", ttl: 100
+    }),
     secret: 'Beauty-luci-love', 
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } 
+    cookie: {
+        maxAge: 3600000,
+        httpOnly: true,
+        secure: false 
+    }
+    
 }));
 
 initializePassport();

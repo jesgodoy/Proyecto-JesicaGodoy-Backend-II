@@ -66,6 +66,9 @@ router.post("/login", async (req, res) => {
             return res.status(401).send("Contraseña incorrecta.");
         }
 
+        req.session.user = user; 
+        req.session.login = true; 
+
         const token = generateToken(user); 
         res.cookie("BeautyCookieToken", token, { maxAge: 3600000, httpOnly: true });
         res.redirect("/api/sessions/current");
@@ -79,6 +82,7 @@ router.post("/login", async (req, res) => {
 
 router.post("/logout", async (req, res) => {
     try {
+        req.session.destroy(); //esto permite eliminar la secion  
         res.clearCookie("BeautyCookieToken");
         res.redirect("/login");
     } catch (error) {

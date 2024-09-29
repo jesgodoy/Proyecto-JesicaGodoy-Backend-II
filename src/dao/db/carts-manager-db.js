@@ -51,7 +51,9 @@ class CartManager {
             }
 
             cart.markModified("cart");
-            await cart.save();
+           
+            cart.totalItems = cart.cart.reduce((sum, item) => sum + item.quantity, 0);
+        await cart.save(); 
             return cart;
         } catch (error) {
             console.error("Error al agregar un producto al carrito:", error);

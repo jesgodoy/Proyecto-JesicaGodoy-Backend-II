@@ -75,7 +75,7 @@
         </nav>
     </div>
 
-    <!-- Script para manejo de carrito y otras funcionalidades -->
+    <!-- JS para manejo de carrito y otras funciones -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             {{#if user}}
@@ -87,7 +87,7 @@
                 });
             {{/if}}
 
-            // Manejar clics en los botones "Agregar al Carrito"
+            // boton para agregar al carrito 
             const addToCartButtons = document.querySelectorAll('.add-to-cart');
             addToCartButtons.forEach(button => {
                 button.addEventListener('click', function() {
@@ -122,9 +122,8 @@
                 confirmButtonText: 'Cerrar'
             });
         }
-
+        //  verificar que esta logueado para agregar al carrito si no esta no puede agregar al carrito
         function addToCart(productId) {
-            // Verificar si el usuario está logueado
             const isLoggedIn = {{#if user}}true{{else}}false{{/if}};
             if (!isLoggedIn) {
                 Swal.fire({
@@ -136,19 +135,16 @@
                 return;
             }
 
-            // Obtener el ID del carrito del usuario
             const cartId = "{{user.cart}}";
 
-            // Enviar la solicitud AJAX al servidor para agregar el producto al carrito
             fetch(`/api/carts/${cartId}/product/${productId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // Incluir el token JWT si es necesario para autenticación
                     'Authorization': `Bearer ${getCookie('BeautyCookieToken')}`
                 },
                 body: JSON.stringify({
-                    quantity: 1  // Puedes modificar esto para permitir al usuario seleccionar la cantidad
+                    quantity: 1  
                 })
             })
             .then(response => response.json())
@@ -180,6 +176,7 @@
                 });
             });
         }
+       
 
         function updateCartItemCount(count) {
             const cartBadge = document.getElementById('cartItemCount');
@@ -189,9 +186,9 @@
         }
 
         // Función para obtener cookies (para obtener el token JWT)
-        function getCookie(name) {
+        function getCookie(BeautyCookieToken) {
             const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
+            const parts = value.split(`; ${BeautyCookieToken}=`);
             if (parts.length === 2) return parts.pop().split(';').shift();
         }
     </script>
