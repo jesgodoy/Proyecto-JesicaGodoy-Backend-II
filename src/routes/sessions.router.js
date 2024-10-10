@@ -11,7 +11,7 @@ const router = Router();
 const cartManager = new CartManager();
 
 
-router.get("/", async (req, res) => {
+router.get("/users", async (req, res) => {
     try {
         const users = await UserModel.find({});
         res.status(200).json(users);
@@ -58,12 +58,11 @@ router.post("/login", async (req, res) => {
 
     try {
         const user = await UserModel.findOne({ email });
-        if (!user) {
-            return res.status(401).send("Usuario no registrado.");
-        }
 
-        if (!isValidPassword(password, user)) {
-            return res.status(401).send("Contraseña incorrecta.");
+        // Verifica si el usuario existe
+        if (!user || !isValidPassword(password, user)) {
+            // Mensaje genérico para no dar pistas
+            return res.status(401).send("Credenciales Inválidas.");
         }
 
         req.session.user = user; 
@@ -78,6 +77,7 @@ router.post("/login", async (req, res) => {
         res.status(500).send("Error interno del servidor.");
     }
 });
+
 
 
 router.post("/logout", async (req, res) => {
