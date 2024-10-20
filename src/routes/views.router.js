@@ -1,26 +1,17 @@
 import { Router } from "express";
-import ProductManager from "../dao/db/products-manager-db.js";
+import productController from "../controllers/product.controller.js";
 import CartManager from "../dao/db/carts-manager-db.js";
 
 const router = Router();
-const productManager = new ProductManager();
+
 const cartManager = new CartManager();
 
 
 
 router.get("/", async (req, res) => {
     try {
-        const products = await productManager.getProducts({
-            limit: 1000,
-        });
-
-        const nuevoArray = products.docs.map((product) => {
-            return product.toObject();
-        });
-
-        res.render("home", {
-            productos: nuevoArray,
-        });
+    
+        res.render("login");
 
     } catch (error) {
         console.error("Error al obtener los productos para la vista de inicio:", error);
@@ -28,37 +19,10 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.get("/products", async (req, res) => {
-    try {
-        const { page = 1, limit = 4 } = req.query;
+router.get("/products", productController.renderProducts);
 
-        const products = await productManager.getProducts({
-            page: parseInt(page),
-            limit: parseInt(limit),
-        });
+router.get('/products/:pid', productController.renderDetailProduct);
 
-        const nuevoArray = products.docs.map((product) => {
-            return product.toObject();
-        });
-
-        res.render("products", {
-            productos: nuevoArray,
-            hasPrevPage: products.hasPrevPage,
-            hasNextPage: products.hasNextPage,
-            prevPage: products.prevPage,
-            nextPage: products.nextPage,
-            currentPage: products.page,
-            totalPages: products.totalPages,
-        });
-
-    } catch (error) {
-        console.error("Error al obtener los productos", error);
-        res.status(500).json({
-            status: "error",
-            error: "Error Interno del Servidor",
-        });
-    }
-});
 
 router.get('/carts/:cid', async (req, res) => {
     try {
@@ -89,24 +53,6 @@ router.get('/carts/:cid', async (req, res) => {
     }
 });
 
-router.get('/products/:pid', async (req, res) => {
-    try {
-        const productId = req.params.pid;
-        const product = await productManager.getProductById(productId);
-
-        if (!product) {
-            return res.status(404).render('error', { message: 'Producto no encontrado' });
-        }
-
-        res.render('product-detail', {
-            product: product.toObject()
-        });
-
-    } catch (error) {
-        console.error("Error al obtener el producto:", error);
-        res.status(500).render('error', { message: 'Error al obtener el producto' });
-    }
-});
 
 router.get("/realtimeproducts", async (req, res) => {
     try {
