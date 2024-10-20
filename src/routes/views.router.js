@@ -1,10 +1,10 @@
 import { Router } from "express";
 import productController from "../controllers/product.controller.js";
-import CartManager from "../dao/db/carts-manager-db.js";
+import cartController from "../controllers/cart.controllers.js";
 
 const router = Router();
 
-const cartManager = new CartManager();
+
 
 
 
@@ -24,34 +24,7 @@ router.get("/products", productController.renderProducts);
 router.get('/products/:pid', productController.renderDetailProduct);
 
 
-router.get('/carts/:cid', async (req, res) => {
-    try {
-        const cartId = req.params.cid;
-        const cart = await cartManager.getCartById(cartId);
-
-        if (!cart) {
-            return res.status(404).render('error', { message: 'Carrito no encontrado' });
-        }
-
-        const processedCart = {
-            _id: cart._id.toString(),
-            cart: cart.cart.map(item => ({
-                productId: item.product._id.toString(),
-                title: item.product.title,
-                price: item.product.price,
-                quantity: item.quantity,
-                _id: item._id.toString()
-            })),
-            totalItems: cart.totalItems // Asegúrate de incluir esto
-        };
-
-        res.render('cart', { cart: processedCart });
-
-    } catch (error) {
-        console.error("Error al obtener el carrito:", error);
-        res.status(500).render('error', { message: 'Error al obtener el carrito' });
-    }
-});
+router.get('/carts/:cid', cartController.renderCart);
 
 
 router.get("/realtimeproducts", async (req, res) => {
