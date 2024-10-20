@@ -5,91 +5,18 @@ import CartManager from "../dao/db/carts-manager-db.js";
 import { createHash, isValidPassword } from "../utils/util.js";
 import ProductManager from "../dao/db/products-manager-db.js"; 
 import { generateToken } from "../utils/jsonwebtoken.js";
+import UserController from '../controllers/user.controllers.js'
+
+
 
 const productManager = new ProductManager(); 
 const router = Router();
 const cartManager = new CartManager();
 
-
-router.get("/users", async (req, res) => {
-    try {
-        const users = await UserModel.find({});
-        res.status(200).json(users);
-    } catch (error) {
-        console.error("Error al obtener los usuarios:", error);
-        res.status(500).send("Error interno del servidor.");
-    }
-});
-
-router.post("/register", async (req, res) => {
-    const { first_name, last_name, email, age, password } = req.body;
-
-    try {
-        const existingUser = await UserModel.findOne({ email });
-        if (existingUser) {
-            return res.status(400).send("El usuario ya existe.");
-        }
-
-        const newCart = await cartManager.addCart(); 
-
-        const newUser = new UserModel({
-            first_name,
-            last_name,
-            email,
-            age,
-            password: createHash(password),
-            cart: newCart._id 
-        });
-
-        await newUser.save();
-        const token = generateToken(newUser); 
-
-        res.cookie("BeautyCookieToken", token, { maxAge: 3600000, httpOnly: true });
-        res.redirect("/api/sessions/current");
-    } catch (error) {
-        console.error("Error al registrar el usuario:", error);
-        res.status(500).send("Error interno del servidor.");
-    }
-});
-
-
-router.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        const user = await UserModel.findOne({ email });
-
-        // Verifica si el usuario existe
-        if (!user || !isValidPassword(password, user)) {
-            // Mensaje genérico para no dar pistas
-            return res.status(401).send("Credenciales Inválidas.");
-        }
-
-        req.session.user = user; 
-        req.session.login = true; 
-
-        const token = generateToken(user); 
-        res.cookie("BeautyCookieToken", token, { maxAge: 3600000, httpOnly: true });
-        res.redirect("/api/sessions/current");
-
-    } catch (error) {
-        console.error("Error al iniciar sesión:", error);
-        res.status(500).send("Error interno del servidor.");
-    }
-});
-
-
-
-router.post("/logout", async (req, res) => {
-    try {
-        req.session.destroy(); //esto permite eliminar la secion  
-        res.clearCookie("BeautyCookieToken");
-        res.redirect("/login");
-    } catch (error) {
-        console.error("Error al cerrar sesión:", error);
-        res.status(500).render('error', { message: 'Error al cerrar sesión.' });
-    }
-});
+router.post("/register", UserController.register);
+router.post("/login", UserController.login);
+router.get("/", UserController.getAllUsers);
+router.get("/logout", UserController.logout);
 
 
 const renderHome = async (req, res) => {

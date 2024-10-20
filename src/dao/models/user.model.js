@@ -1,22 +1,38 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
-    first_name: String,
-    last_name: String,
-    email: { type: String, unique: true },
+const usuarioSchema = new mongoose.Schema({
+    first_name: {
+        type: String,
+        required: true
+    },
+    last_name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
     age: {
         type: Number,
-        validate: {
-            validator: function(v) {
-                return v >= 0 && v <= 120; 
-            },
-            message: props => `${props.value} no es una edad válida!`
-        }
+        required: true
     },
-    password: String,
-    cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
-    role: { type: String, default: 'user' }
+    password: {
+        type: String,
+        required: true
+    },
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Cart'
+    },
+    role: {
+        type: String,
+        enum: ['admin', 'user'],
+        default: 'user'
+    }
 });
 
-const UserModel = mongoose.model("user", userSchema);
-export default UserModel;
+const UsuarioModel = mongoose.model('users', usuarioSchema);
+
+export default UsuarioModel;

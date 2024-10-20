@@ -4,10 +4,6 @@ import cartController from "../controllers/cart.controllers.js";
 
 const router = Router();
 
-
-
-
-
 router.get("/", async (req, res) => {
     try {
     
@@ -52,7 +48,9 @@ router.get("/login", (req, res) => {
         console.error("Error al renderizar login:", error);
         res.status(500).render('error', { message: 'Error al cargar la vista de inicio de sesión.' });
     }
+    
 });
+
 
 
 export default router;
