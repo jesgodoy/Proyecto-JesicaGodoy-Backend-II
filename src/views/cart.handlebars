@@ -2,30 +2,146 @@
     <h1>Detalles del Carrito</h1>
 
     {{#if cart.cart.length}}
-    <h5>ID del Carrito: <strong>{{cart._id}}</strong></h5>
+    <h5>ID del Carrito: <strong>{{cart.id}}</strong></h5>
     <table class="table table-striped table-bordered">
         <thead class="thead-dark">
             <tr>
                 <th class="text-center">Producto</th>
                 <th class="text-center">Precio</th>
                 <th class="text-center">Cantidad</th>
+                <th class="text-center"></th>
             </tr>
         </thead>
         <tbody>
             {{#each cart.cart}}
-            <tr>
-                <td>{{title}}</td>
-                <td>${{price}}</td>
-                <td class="text-center">{{quantity}}</td>
+            <tr class="w-50">
+                <td class="text-center w-25">{{this.product.title}}</td>
+                <td class="text-center w-25">${{this.product.price}}</td>
+                <td class="text-center w-25">
+                    <input type="number" class="form-control quantity-input" value="{{this.quantity}}" min="1" data-product-id="{{this.product.id}}">
+                </td>
+                <td class="text-center w-25">
+                    <button class="btn btn-danger removeProduct" data-product-id="{{this.product.id}}">
+                        Eliminar
+                    </button>
+                </td>
             </tr>
             {{/each}}
         </tbody>
     </table>
+    <div class="container mt-3 text-center">
+        <button id="clear-cart" class="btn btn-warning">Vaciar Carrito</button>
+        <a href="/api/carts/{{cart.id}}/purchase" id="finalizar-compra" class="btn btn-primary">Finalizar Compra</a>
+    </div>
     {{else}}
     <div class="pt-3">
-        <h5>ID del Carrito: <strong>{{cart._id}}</strong></p>
+        <h5>ID del Carrito: <strong>{{cart._id}}</strong></h5>
         <p>No hay productos en el carrito.</p>
     </div>
-    
     {{/if}}
 </div>
+
+<script>
+// Manejar la acción de eliminar producto individual
+document.querySelectorAll('.removeProduct').forEach(button => {
+    button.addEventListener('click', async (event) => {
+        const productId = event.currentTarget.getAttribute('data-product-id');
+        
+        if (!productId) {
+            console.error('El ID del producto no está disponible en el botón.');
+            return;
+        }
+
+        const result = await Swal.fire({
+            title: '¿Estás seguro de eliminar este producto?',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminarlo!',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (result.isConfirmed) {
+            const cartId = '{{cart.id}}';
+
+            try {
+                const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+                    method: 'DELETE',
+                });
+
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    Swal.fire('Error', 'Hubo un problema al eliminar el producto.', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Hubo un problema al procesar la solicitud.', 'error');
+            }
+        }
+    });
+});
+
+// Manejar la acción de vaciar el carrito
+document.getElementById('clear-cart').addEventListener('click', async () => {
+    const cartId = '{{cart.id}}';
+
+    const result = await Swal.fire({
+        title: '¿Estás seguro de vaciar el carrito?',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, vaciarlo!',
+        cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+        try {
+            const response = await fetch(`/api/carts/${cartId}/clear`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                location.reload();
+            } else {
+                Swal.fire('Error', 'Hubo un problema al vaciar el carrito.', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error', 'Hubo un problema al procesar la solicitud.', 'error');
+        }
+    }
+});
+
+
+
+// Manejar la modificación de la cantidad
+document.querySelectorAll('.quantity-input').forEach(input => {
+    input.addEventListener('change', async (event) => {
+        const productId = event.target.getAttribute('data-product-id');
+        const newQuantity = event.target.value;
+        const cartId = '{{cart.id}}';
+
+        if (newQuantity < 1) {
+            Swal.fire('Error', 'La cantidad debe ser al menos 1.', 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quantity: newQuantity })
+            });
+
+            if (response.ok) {
+                location.reload();
+            } else {
+                const errorData = await response.json();
+                Swal.fire('Error', errorData.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error', 'Hubo un problema al actualizar la cantidad.', 'error');
+        }
+    });
+});
+</script>
