@@ -19,16 +19,16 @@ router.get('/:cid', cartController.getCart);
 router.delete('/:cid', cartController.deleteCart);
 
 
-router.post('/:cid/products/:pid', cartController.addProduct);
+router.post('/:cid/product/:pid', cartController.addProduct);
 
 
-router.delete('/:cid/products/:pid', cartController.removeProduct);
+router.delete('/:cid/product/:pid', cartController.removeProduct);
 
 
 router.delete('/:cid/clear', cartController.clearCart); 
 
 
-router.put('/:cid/products/:pid', cartController.updateQuantity);
+router.put('/:cid/product/:pid', cartController.updateQuantity);
 
 
 router.get("/:cid/purchase", async (req, res) => {

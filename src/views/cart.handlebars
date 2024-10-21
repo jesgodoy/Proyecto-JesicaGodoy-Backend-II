@@ -35,7 +35,7 @@
     </div>
     {{else}}
     <div class="pt-3">
-        <h5>ID del Carrito: <strong>{{cart._id}}</strong></h5>
+        <h5>ID del Carrito: <strong>{{cart.id}}</strong></h5>
         <p>No hay productos en el carrito.</p>
     </div>
     {{/if}}
@@ -63,7 +63,7 @@ document.querySelectorAll('.removeProduct').forEach(button => {
             const cartId = '{{cart.id}}';
 
             try {
-                const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+                const response = await fetch(`/api/carts/${cartId}/product/${productId}`, {
                     method: 'DELETE',
                 });
 
@@ -124,7 +124,7 @@ document.querySelectorAll('.quantity-input').forEach(input => {
         }
 
         try {
-            const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+            const response = await fetch(`/api/carts/${cartId}/product/${productId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

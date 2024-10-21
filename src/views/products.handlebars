@@ -1,5 +1,39 @@
 <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light"> 
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Lucy-Love</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/products">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/realtimeproducts">Real Time Product</a>
+                    </li>
+                    
+                </ul>
+                <div class="d-flex me-2 w-25">
+                        <div class="pt-2 w-75">
+                            <span class="nav-link d-inline">
+                                <i class="bi bi-person-circle"></i> Bienvenido: {{user.first_name}}!
+                            </span>
+                            <form action="/api/sessions/logout" method="POST" class="d-inline" id="logoutForm">
+                                <button type="button" class="btn btn-link nav-link" onclick="confirmLogout()">Cerrar Sesión</button>
+                            </form>
+                        </div>
+                        <a href="/carts/{{user.cart}}" class="btn btn-outline-primary">
+                            <i class="bi bi-cart">
+                                <span id="cartItemCount" class="badge bg-secondary">{{user.cartItemCount}}</span>
+                            </i>
+                        </a>
 
+                </div>
+            </div>
+        </div>
+    </nav>
     <div class="bg-red p-2">
         <h1 class="text-center py-2 text-light">Nuestros Productos</h1>
     </div>
