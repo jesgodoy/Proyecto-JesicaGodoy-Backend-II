@@ -14,14 +14,13 @@
                         <a class="nav-link" href="/products">Productos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Ofertas</a>
+                        <a class="nav-link" href="/realtimeproducts">realtimeproduct</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Contacto</a>
                     </li>
                 </ul>
                 <div class="d-flex me-2 w-25">
-                    {{#if user}}
                         <div class="pt-2 w-75">
                             <span class="nav-link d-inline">
                                 <i class="bi bi-person-circle"></i> Bienvenido: {{user.first_name}}!
@@ -35,19 +34,11 @@
                                 <span id="cartItemCount" class="badge bg-secondary">{{user.cartItemCount}}</span>
                             </i>
                         </a>
-                    {{else}}
-                        <div class="pt-2">
-                            <span class="nav-link d-inline"></span>
-                            <a href="/login" class="nav-link d-inline">Iniciar Sesión</a>
-                            <span>/</span>
-                            <a href="/register" class="nav-link d-inline">Registrarse</a>
-                        </div>
-                    {{/if}}
+
                 </div>
             </div>
         </div>
     </nav>
-
     <div class="container mt-4">
         <div class="row">
             {{#each productos}}
