@@ -1,4 +1,3 @@
-// controller/user.controller.js
 import UserService from '../services/user.service.js';
 import { generateToken } from '../utils/jsonwebtoken.js';
 
@@ -48,9 +47,9 @@ class UserController {
                     return res.status(500).render('error', { message: 'Error al cerrar sesión.' });
                 }
                 console.log("Sesión destruida. Limpiando cookie...");
-                res.clearCookie("BeautyCookieToken"); // Limpiar la cookie
+                res.clearCookie("BeautyCookieToken");
                 console.log("Redirigiendo a /login...");
-                return res.redirect("/login"); // Redirigir al login
+                return res.redirect("/login");
             });
         } catch (error) {
             console.error("Error al cerrar sesión:", error);

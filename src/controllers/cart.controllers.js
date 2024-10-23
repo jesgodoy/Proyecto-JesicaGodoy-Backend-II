@@ -1,7 +1,7 @@
 import cartService from '../services/cart.service.js';
 
 class CartController {
-    // Crear un nuevo carrito
+
     async createCart(req, res) {
         try {
             const newCart = await cartService.createCart();
@@ -11,20 +11,20 @@ class CartController {
         }
     }
 
-    // Obtener un carrito por ID
-    async getCart(req, res) {
-    try {
-        const { cid } = req.params;
-        const cart = await cartService.getCartById(cid);
-        res.json(cart);
-    } catch (error) {
-        
-        res.status(404).json({ error: error.message });
-    }
-}
 
-    
-    // Obtener todos los carritos
+    async getCart(req, res) {
+        try {
+            const { cid } = req.params;
+            const cart = await cartService.getCartById(cid);
+            res.json(cart);
+        } catch (error) {
+
+            res.status(404).json({ error: error.message });
+        }
+    }
+
+
+
     async getAllCarts(req, res) {
         try {
             const carts = await cartService.getAllCarts();
@@ -38,30 +38,30 @@ class CartController {
         try {
             const { cid } = req.params;
             const deletedCart = await cartService.deleteCart(cid);
-            res.status(204).send(); // 204 No Content
+            res.status(200).send(`carrito eliminado correctamente`);
         } catch (error) {
-            console.error(`Error en deleteCart: ${error.message}`); // Log del error
+            console.error(`Error al eliminar carrito: ${error.message}`);
             res.status(404).json({ error: error.message });
         }
     }
     async addProduct(req, res) {
-        
-            try {
-                const { cid, pid } = req.params;
-                const { quantity } = req.body; // Asegúrate de enviar 'quantity' en el cuerpo de la solicitud
-                const updatedCart = await cartService.addProductToCart(cid, pid, quantity);
-                res.json(updatedCart);
-            } catch (error) {
-                res.status(400).json({ error: error.message });
-            }
-        
+
+        try {
+            const { cid, pid } = req.params;
+            const { quantity } = req.body;
+            const updatedCart = await cartService.addProductToCart(cid, pid, quantity);
+            res.json(updatedCart);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+
     }
 
     async removeProduct(req, res) {
         try {
             const { cid, pid } = req.params;
             const updatedCart = await cartService.removeProductFromCart(cid, pid);
-            res.status(200).json(updatedCart); 
+            res.status(200).json(updatedCart);
         } catch (error) {
             res.status(404).json({ error: error.message });
         }
@@ -71,7 +71,7 @@ class CartController {
         try {
             const { cid } = req.params;
             const updatedCart = await cartService.clearCart(cid);
-            res.status(200).json(updatedCart); 
+            res.status(200).json(updatedCart);
         } catch (error) {
             res.status(404).json({ error: error.message });
         }
@@ -92,7 +92,7 @@ class CartController {
         try {
             const { cid } = req.params;
             const cart = await cartService.getCartById(cid);
-            res.render('cart', { cart }); // Asegúrate de que 'cart' es el nombre de tu vista Handlebars
+            res.render('cart', { cart });
         } catch (error) {
             res.status(404).json({ error: error.message });
         }

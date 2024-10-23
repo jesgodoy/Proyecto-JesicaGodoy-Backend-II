@@ -54,23 +54,22 @@ class ProductController {
   }
 }
  
-    // Renderizar página de productos con Handlebars
+
     async renderProducts(req, res) {
       try {
         const { page = 1, limit = 4, sort, query } = req.query;
   
-        // Configurando opciones de consulta y paginación
+      
         const queryOptions = {};
         const sortOptions = sort ? { price: sort === 'desc' ? -1 : 1 } : {};
         const skip = (parseInt(page) - 1) * parseInt(limit);
-  
-        // Llamamos al servicio para obtener los productos
+
         const productos = await productService.getProducts({ limit, page, sort, query });
   
-        // Convertimos los productos en objetos planos
+
         const productArray = productos.docs.map((producto) => producto.toObject());
       
-        // Renderizamos la vista con los productos y la información de la paginación
+     
         res.render("products", {
           productos: productArray,
           hasPrevPage: productos.hasPrevPage,
@@ -79,31 +78,31 @@ class ProductController {
           nextPage: productos.nextPage,
           currentPage: productos.page,
           totalPages: productos.totalPages,
-          query: query,  // Para mostrar en el formulario de búsqueda
-          sort: sort,    // Para mantener el estado de la ordenación
+          query: query, 
+          sort: sort
         });
       } catch (error) {
         res.status(500).json({ error: error.message });
       }
     }
   
-    // Renderizar página de un producto específico
+ 
     async renderDetailProduct(req, res) {
       try {
-          const productId = req.params.pid;  // Obtener el ID del producto desde los parámetros de la URL
-          const product = await productService.getProductById(productId);  // Llamada al servicio para obtener el producto
+          const productId = req.params.pid;  
+          const product = await productService.getProductById(productId);  
   
           if (!product) {
-              // Si el producto no se encuentra, renderizamos una página de error o devolvemos un error 404
+           
               return res.status(404).render('error', { message: 'Producto no encontrado' });
           }
   
-          // Renderizamos la vista del detalle del producto, pasando los datos del producto
+
           res.render('product-detail', {
-              product: product.toObject ? product.toObject() : product  // Aseguramos que el producto sea un objeto, si es necesario
+              product: product.toObject ? product.toObject() : product  
           });
       } catch (error) {
-          // Si ocurre un error durante el proceso, lo mostramos en la consola y devolvemos un error 500
+  
           console.error("Error al obtener el producto:", error);
           res.status(500).json({ error: 'Error al obtener el producto' });
       }
