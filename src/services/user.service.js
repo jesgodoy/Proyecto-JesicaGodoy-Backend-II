@@ -1,6 +1,5 @@
-// service/user.service.js
 import UserRepository from '../repositories/user.reposiroy.js'
-import { createHash, isValidPassword  } from '../utils/util.js';
+import { createHash, isValidPassword } from '../utils/util.js';
 
 class UserService {
     async registerUser(userData) {
@@ -12,7 +11,7 @@ class UserService {
         const user = await UserRepository.loginUser(email);
         if (!user || !isValidPassword(password, user)) throw new Error("Credenciales incorrectas");
         return user;
-    
+
     }
 
     async getAllUsers() {

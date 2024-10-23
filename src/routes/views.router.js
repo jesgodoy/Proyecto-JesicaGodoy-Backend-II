@@ -19,7 +19,7 @@ router.get('/admin', authenticateUser, soloAdmin, (req, res) => {
     res.send('Bienvenido a la zona admin');
 });
 
-// Ruta para la zona de usuarios
+
 router.get('/user', authenticateUser, soloUser, (req, res) => {
     res.send('Bienvenido a la zona de usuarios');
 });
@@ -32,7 +32,7 @@ router.get('/products/:pid', productController.renderDetailProduct);
 router.get('/carts/:cid', cartController.renderCart);
 
 
-// Ruta para productos en tiempo real
+//solo puedenaccceder los administradoder
 router.get("/realtimeproducts", authenticateUser, soloAdmin, async (req, res) => {
     try {
         res.render("realtimeproducts");
