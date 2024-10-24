@@ -38,24 +38,16 @@ class UserController {
         }
     }
 
-    async logout(req, res) {
+    async logout (req, res) {
         try {
-            console.log("Destruyendo sesión...");
-            req.session.destroy((err) => {
-                if (err) {
-                    console.error("Error al destruir la sesión:", err);
-                    return res.status(500).render('error', { message: 'Error al cerrar sesión.' });
-                }
-                console.log("Sesión destruida. Limpiando cookie...");
-                res.clearCookie("BeautyCookieToken");
-                console.log("Redirigiendo a /login...");
-                return res.redirect("/login");
-            });
+            req.session.destroy();
+            res.clearCookie("BeautyCookieToken");
+            res.redirect("/login");
         } catch (error) {
             console.error("Error al cerrar sesión:", error);
             res.status(500).render('error', { message: 'Error al cerrar sesión.' });
         }
-    }
+    };
 }
 
 export default new UserController();

@@ -34,7 +34,7 @@ router.put('/:cid/product/:pid', cartController.updateQuantity);
 router.get("/:cid/purchase", async (req, res) => {
     const cartId = req.params.cid;
     try {
-        // Buscar el cart por ID
+      
         const cart = await CartModel.findById(cartId).populate('cart.product');
         if (!cart) {
             return res.status(404).json({ error: "carrito no encontrado" });

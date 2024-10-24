@@ -1,12 +1,12 @@
 import { Router } from "express";
 import productController from "../controllers/product.controller.js";
 import cartController from "../controllers/cart.controllers.js";
-import { authenticateUser, soloAdmin, soloUser } from '../middlewares/auth.middleware.js'; 
+import { authenticateUser, soloAdmin, soloUser } from '../middlewares/auth.middleware.js';
 const router = Router();
 
 router.get("/", async (req, res) => {
     try {
-    
+
         res.render("login");
 
     } catch (error) {
@@ -58,7 +58,7 @@ router.get("/login", (req, res) => {
         console.error("Error al renderizar login:", error);
         res.status(500).render('error', { message: 'Error al cargar la vista de inicio de sesión.' });
     }
-    
+
 });
 
 

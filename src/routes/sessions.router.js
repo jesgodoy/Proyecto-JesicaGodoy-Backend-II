@@ -16,7 +16,8 @@ const cartManager = new CartManager();
 router.post("/register", UserController.register);
 router.post("/login", UserController.login);
 router.get("/", UserController.getAllUsers);
-router.get("/logout", UserController.logout);
+//router.get("/logout", UserController.logout);
+router.post("/logout", UserController.logout);
 
 
 const renderHome = async (req, res) => {
