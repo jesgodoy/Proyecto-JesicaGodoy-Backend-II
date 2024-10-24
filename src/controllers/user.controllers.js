@@ -1,6 +1,16 @@
 import UserService from '../services/user.service.js';
 import { generateToken } from '../utils/jsonwebtoken.js';
 
+
+import { UserDTO } from "../dto/user.dto.js";
+import ProductManager from '../dao/db/products-manager-db.js';
+import CartManager from '../dao/db/carts-manager-db.js';
+
+const productManager = new ProductManager(); 
+
+const cartManager = new CartManager();
+
+
 class UserController {
     async register(req, res) {
         try {
@@ -48,6 +58,27 @@ class UserController {
             res.status(500).render('error', { message: 'Error al cerrar sesión.' });
         }
     };
+    
+    async current (req, res) {
+        try {
+            const cart = await cartManager.getCartById(req.user.cart);
+            const userData = new UserDTO(req.user);
+    
+            const user = {
+                ...userData,
+                cartItemCount: cart ? cart.totalItems : 0,
+            };
+    
+            const products = await productManager.getProducts();
+            const nuevoArray = products.docs.map(product => product.toObject());
+    
+            res.render("home", { user, productos: nuevoArray });
+        } catch (error) {
+            console.error("Error al obtener los datos del usuario:", error);
+            res.status(500).render('error', { message: 'Error al obtener los datos del usuario.', error: error.message });
+        }
+    };
+
 }
 
 export default new UserController();
