@@ -1,7 +1,5 @@
 import UserService from '../services/user.service.js';
 import { generateToken } from '../utils/jsonwebtoken.js';
-
-
 import { UserDTO } from "../dto/user.dto.js";
 import ProductManager from '../dao/db/products-manager-db.js';
 import CartManager from '../dao/db/carts-manager-db.js';
