@@ -16,7 +16,6 @@ const cartManager = new CartManager();
 router.post("/register", UserController.register);
 router.post("/login", UserController.login);
 router.get("/", UserController.getAllUsers);
-//router.get("/logout", UserController.logout);
 router.post("/logout", UserController.logout);
 
 
@@ -45,20 +44,6 @@ const renderHome = async (req, res) => {
     }
 };
 
-
-router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
-
-
-router.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }), async (req, res) => {
-    const user = req.user;
-
-    const token = generateToken(user); 
-
-    res.cookie("BeautyCookieToken", token, { maxAge: 3600000, httpOnly: true });
-    req.session.user = user; 
-    req.session.login = true; 
-    await renderHome(req, res); 
-});
 
 
 router.get("/current", passport.authenticate("current", { session: false }), renderHome);
